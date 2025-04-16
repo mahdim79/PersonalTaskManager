@@ -1,13 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.TaskManager" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryVariant">@color/whiteShadow</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/whiteShadow</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="fabBackgroundColor">@color/white</item>
+        <item name="buttonTextColor">@color/white</item>
+        <item name="colorBackground">@color/white</item>
+        <item name="textInputBackgroundFocused">@color/white</item>
+        <item name="textInputBackgroundNotFocused">@color/whiteShadow</item>
     </style>
 
     <style name="Theme.TaskManager" parent="Base.Theme.TaskManager" />

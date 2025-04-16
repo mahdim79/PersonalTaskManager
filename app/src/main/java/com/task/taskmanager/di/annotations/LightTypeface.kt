@@ -1,0 +1,1 @@
+package com.task.taskmanager.di.annotationsimport javax.inject.Qualifier@Qualifierannotation class LightTypeface()

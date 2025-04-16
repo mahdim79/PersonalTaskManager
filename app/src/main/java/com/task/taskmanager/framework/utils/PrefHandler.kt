@@ -41,11 +41,6 @@ class PrefHandler @Inject constructor(@ApplicationContext val context: Context) 
                     key,
                     (value as Long?)!!
                 )
-
-                is Set<*> -> putStringSet(
-                    key,
-                    value as Set<String?>?
-                )
             }
         }
     }

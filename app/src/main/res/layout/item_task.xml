@@ -15,7 +15,7 @@
         android:maxWidth="120dp"
         app:layout_constraintTop_toTopOf="parent"
         android:text="Title"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:layout_height="wrap_content"/>
 
     <com.task.taskmanager.presentation.utils.TextViewRegular

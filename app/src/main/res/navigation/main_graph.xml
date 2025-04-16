@@ -22,5 +22,10 @@
     <fragment
         android:id="@+id/updateTaskFragment"
         android:name="com.task.taskmanager.presentation.updatetask.UpdateTaskFragment"
-        android:label="UpdateTaskFragment" />
+        android:label="UpdateTaskFragment" >
+        <argument
+            android:name="taskId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 </navigation>

@@ -1,5 +1,6 @@
 package com.task.taskmanager.presentation.addtask.adapters
 
+import android.icu.util.Calendar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.task.core.domain.task.Task
 import com.task.taskmanager.R
 import com.task.taskmanager.databinding.ItemTaskBinding
+import com.task.taskmanager.presentation.utils.TaskAction
+import com.task.taskmanager.utils.Utils
 
 class MainTaskRecyclerViewAdapter :
     ListAdapter<Task, MainTaskRecyclerViewAdapter.MainViewHolder>(callback) {
 
-    private lateinit var onItemClickListener: (taskId: Int) -> Unit
+    private lateinit var onActionClickListener: (taskId: Int,action:TaskAction) -> Unit
 
     companion object {
         val callback = object : DiffUtil.ItemCallback<Task>() {
@@ -41,18 +44,27 @@ class MainTaskRecyclerViewAdapter :
         val item = getItem(position)
         holder.itemTaskBinding.tvTaskItemTitle.text = item.title
         holder.itemTaskBinding.tvTaskItemDescription.text = item.description
-        holder.itemTaskBinding.tvTaskItemDeadLine.text = item.time.toString()
 
-        holder.itemView.setOnClickListener {
-            if (::onItemClickListener.isInitialized)
+        val showTime = Utils.convertCalendarTimeToShowFormat(Calendar.getInstance().apply { timeInMillis = item.time })
+        holder.itemTaskBinding.tvTaskItemDeadLine.text = showTime
+
+        holder.itemTaskBinding.ivItemTaskRemove.setOnClickListener {
+            if (::onActionClickListener.isInitialized)
                 item.id?.let {
-                    onItemClickListener.invoke(it)
+                    onActionClickListener.invoke(it,TaskAction.ACTION_REMOVE)
+                }
+        }
+
+        holder.itemTaskBinding.ivItemTaskEdit.setOnClickListener {
+            if (::onActionClickListener.isInitialized)
+                item.id?.let {
+                    onActionClickListener.invoke(it,TaskAction.ACTION_EDIT)
                 }
         }
     }
 
-    fun setOnItemClickListener(listener: (taskId: Int) -> Unit) {
-        this.onItemClickListener = listener
+    fun setOnActionClickListener(listener: (taskId: Int,action:TaskAction) -> Unit) {
+        this.onActionClickListener = listener
     }
 
     inner class MainViewHolder(itemView: View) : ViewHolder(itemView) {

@@ -44,6 +44,14 @@ class TaskRepository(
         }
     }
 
+    suspend fun getTaskById(id:Int) = flow {
+        try {
+            emit(DataState.Success(localDataSource.getTaskById(id)))
+        } catch (e: Exception) {
+            emit(DataState.LocalError(e.message))
+        }
+    }
+
     suspend fun fetchAllTasksFromApi(isOnline: Boolean) = flow {
         if (isOnline) {
             emit(DataState.Loading)

@@ -7,4 +7,5 @@ object Constants {
 
     // local db
     const val DB_NAME = "task_local_db"
+
 }

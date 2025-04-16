@@ -3,13 +3,19 @@ package com.task.taskmanager.framework.remote.mapper
 import com.task.core.domain.task.Task
 import com.task.taskmanager.framework.remote.dto.TaskDto
 import com.task.taskmanager.framework.utils.EntityMapper
+import javax.inject.Inject
 
-class TaskRemoteMapper:EntityMapper<Task,TaskDto> {
+class TaskRemoteMapper @Inject constructor() : EntityMapper<Task, TaskDto> {
     override fun mapToEntity(domain: Task): TaskDto {
-        TODO("Not yet implemented")
+        return TaskDto(domain.title, domain.description, domain.time)
     }
 
     override fun mapToDomain(entity: TaskDto): Task {
-        TODO("Not yet implemented")
+        return Task(
+            id = null,
+            title = entity.title,
+            description = entity.description,
+            time = entity.time
+        )
     }
 }

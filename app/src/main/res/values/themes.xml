@@ -7,6 +7,7 @@
         <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/whiteShadow</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="fabBackgroundColor">@color/white</item>
     </style>
 
     <style name="Theme.TaskManager" parent="Base.Theme.TaskManager" />

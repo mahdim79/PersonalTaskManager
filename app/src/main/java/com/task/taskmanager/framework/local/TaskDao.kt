@@ -1,4 +1,23 @@
 package com.task.taskmanager.framework.local
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.task.taskmanager.framework.local.entities.TaskEntity
+
+@Dao
 interface TaskDao {
+    @Insert(entity = TaskEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addNewTask(task: TaskEntity)
+
+    @Query("DELETE FROM tasks WHERE id = :id")
+    suspend fun deleteTask(id: Int)
+
+    @Update(entity = TaskEntity::class)
+    suspend fun updateTask(task: TaskEntity)
+
+    @Query("SELECT * FROM tasks")
+    suspend fun fetchAllTasks(): List<TaskEntity>
 }

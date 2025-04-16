@@ -9,11 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.task.core.helper.DataState
 import com.task.taskmanager.R
 import com.task.taskmanager.databinding.FragmentHomeBinding
 import com.task.taskmanager.presentation.addtask.adapters.MainTaskRecyclerViewAdapter
 import com.task.taskmanager.presentation.base.BaseFragment
 import com.task.taskmanager.presentation.utils.TaskAction
+import com.task.taskmanager.utils.ArgumentKeys
 import com.task.taskmanager.utils.MockData
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,6 +39,32 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        observeLiveData()
+    }
+
+    private fun observeLiveData() {
+
+        viewModel.removeTaskLiveData.observe(viewLifecycleOwner){
+            when(it){
+                is DataState.Success -> viewModel.getLocalTasks()
+                else -> showToast(getString(R.string.error))
+            }
+        }
+
+        viewModel.localTasksLiveData.observe(viewLifecycleOwner){
+            when(it){
+                is DataState.Success -> {
+                    taskRecyclerViewAdapter.submitList(it.value)
+                    if(it.value.isEmpty())
+                        mBinding.tvHomeNothing.visibility = View.VISIBLE
+                    else
+                        mBinding.tvHomeNothing.visibility = View.GONE
+                }
+                else -> showToast(getString(R.string.error))
+            }
+        }
+
+        viewModel.getLocalTasks()
     }
 
     private fun initViews() {
@@ -54,22 +82,23 @@ class HomeFragment : BaseFragment() {
 
         taskRecyclerViewAdapter.setOnActionClickListener { taskId, action ->
             when(action){
-                TaskAction.ACTION_EDIT -> findNavController().navigate(R.id.action_homeFragment_to_updateTaskFragment, Bundle().apply { putInt("taskId",taskId) })
+                TaskAction.ACTION_EDIT -> findNavController().navigate(R.id.action_homeFragment_to_updateTaskFragment, Bundle().apply { putInt(ArgumentKeys.KEY_TASK_ID,taskId) })
                 TaskAction.ACTION_REMOVE -> showRemoveTaskDialog(taskId)
             }
         }
 
         mBinding.rvHomeTasks.adapter = taskRecyclerViewAdapter
-        taskRecyclerViewAdapter.submitList(MockData.getMockTasks())
     }
 
     private fun showRemoveTaskDialog(taskId: Int) {
         val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.remove_task))
+            .setMessage(getString(R.string.remove_task_message))
             .setNegativeButton(getString(R.string.cancel)) { dialogInterface, _ ->
                 dialogInterface.dismiss()
             }
             .setPositiveButton(getString(R.string.remove)) { dialogInterface, _ ->
-                // TODO implement remove action
+                viewModel.removeTaskById(taskId)
                 dialogInterface.dismiss()
             }
             .create()

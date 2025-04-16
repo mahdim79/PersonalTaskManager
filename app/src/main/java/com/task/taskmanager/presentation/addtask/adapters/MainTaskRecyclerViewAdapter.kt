@@ -1,5 +1,6 @@
 package com.task.taskmanager.presentation.addtask.adapters
 
+import android.icu.util.Calendar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.task.core.domain.task.Task
 import com.task.taskmanager.R
 import com.task.taskmanager.databinding.ItemTaskBinding
 import com.task.taskmanager.presentation.utils.TaskAction
+import com.task.taskmanager.utils.Utils
 
 class MainTaskRecyclerViewAdapter :
     ListAdapter<Task, MainTaskRecyclerViewAdapter.MainViewHolder>(callback) {
@@ -42,9 +44,9 @@ class MainTaskRecyclerViewAdapter :
         val item = getItem(position)
         holder.itemTaskBinding.tvTaskItemTitle.text = item.title
         holder.itemTaskBinding.tvTaskItemDescription.text = item.description
-        holder.itemTaskBinding.tvTaskItemDeadLine.text = item.time.toString()
 
-
+        val showTime = Utils.convertCalendarTimeToShowFormat(Calendar.getInstance().apply { timeInMillis = item.time })
+        holder.itemTaskBinding.tvTaskItemDeadLine.text = showTime
 
         holder.itemTaskBinding.ivItemTaskRemove.setOnClickListener {
             if (::onActionClickListener.isInitialized)

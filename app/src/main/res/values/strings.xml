@@ -13,4 +13,9 @@
     <string name="update_task">Update Task</string>
     <string name="update">Update</string>
     <string name="changeTime">Change Time</string>
+    <string name="added">Added</string>
+    <string name="Updated">Updated!</string>
+    <string name="remove_task">Remove Task</string>
+    <string name="no_task_to_show">Nothing to show!</string>
+    <string name="remove_task_message">Are you sure you want to remove this task?</string>
 </resources>

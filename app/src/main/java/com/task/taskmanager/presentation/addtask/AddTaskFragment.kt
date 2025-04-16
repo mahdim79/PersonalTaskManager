@@ -13,6 +13,7 @@ import com.task.core.helper.DataState
 import com.task.taskmanager.R
 import com.task.taskmanager.databinding.FragmentAddTaskBinding
 import com.task.taskmanager.presentation.base.BaseFragment
+import com.task.taskmanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
@@ -43,7 +44,10 @@ class AddTaskFragment : BaseFragment() {
     private fun observeLiveData() {
         viewModel.addTaskLiveData.observe(viewLifecycleOwner){
             when(it){
-                is DataState.Success -> findNavController().popBackStack()
+                is DataState.Success -> {
+                    showToast(getString(R.string.added))
+                    findNavController().popBackStack()
+                }
                 else -> showToast(getString(R.string.error))
             }
         }
@@ -85,7 +89,7 @@ class AddTaskFragment : BaseFragment() {
             { _, hour, minute ->
                 userDateCalendar.set(Calendar.HOUR_OF_DAY, hour)
                 userDateCalendar.set(Calendar.MINUTE, minute)
-                if (checkValidInputTime()){
+                if (Utils.validateTaskTime(userDateCalendar.timeInMillis)){
                     viewModel.addNewTask(Task(id = null, title = mBinding.tieAddTaskTitle.text.toString(), description = mBinding.tieAddTaskDescription.text.toString(), userDateCalendar.timeInMillis))
                 }else{
                     showToast(getString(R.string.wrong_input_time))
@@ -109,7 +113,5 @@ class AddTaskFragment : BaseFragment() {
 
         return true
     }
-
-    private fun checkValidInputTime(): Boolean = userDateCalendar.timeInMillis > System.currentTimeMillis()
 
 }

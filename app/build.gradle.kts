@@ -58,7 +58,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.kotlinx.coroutine.android)
-    // implementation(project(":core"))
+    implementation(project(":core"))
     ksp (libs.room.compiler)
 
     // Region Hilt
@@ -77,6 +77,9 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.fragment.ktx)
+
+    // Region Gson
+    implementation(libs.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

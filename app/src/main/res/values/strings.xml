@@ -8,4 +8,9 @@
     <string name="description_required_message">Description field is required!</string>
     <string name="wrong_input_time">Please select a future time.</string>
     <string name="error">Something went wrong.</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
+    <string name="update_task">Update Task</string>
+    <string name="update">Update</string>
+    <string name="changeTime">Change Time</string>
 </resources>

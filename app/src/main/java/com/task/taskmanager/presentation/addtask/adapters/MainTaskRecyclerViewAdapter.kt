@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.task.core.domain.task.Task
 import com.task.taskmanager.R
 import com.task.taskmanager.databinding.ItemTaskBinding
+import com.task.taskmanager.presentation.utils.TaskAction
 
 class MainTaskRecyclerViewAdapter :
     ListAdapter<Task, MainTaskRecyclerViewAdapter.MainViewHolder>(callback) {
 
-    private lateinit var onItemClickListener: (taskId: Int) -> Unit
+    private lateinit var onActionClickListener: (taskId: Int,action:TaskAction) -> Unit
 
     companion object {
         val callback = object : DiffUtil.ItemCallback<Task>() {
@@ -43,16 +44,25 @@ class MainTaskRecyclerViewAdapter :
         holder.itemTaskBinding.tvTaskItemDescription.text = item.description
         holder.itemTaskBinding.tvTaskItemDeadLine.text = item.time.toString()
 
-        holder.itemView.setOnClickListener {
-            if (::onItemClickListener.isInitialized)
+
+
+        holder.itemTaskBinding.ivItemTaskRemove.setOnClickListener {
+            if (::onActionClickListener.isInitialized)
                 item.id?.let {
-                    onItemClickListener.invoke(it)
+                    onActionClickListener.invoke(it,TaskAction.ACTION_REMOVE)
+                }
+        }
+
+        holder.itemTaskBinding.ivItemTaskEdit.setOnClickListener {
+            if (::onActionClickListener.isInitialized)
+                item.id?.let {
+                    onActionClickListener.invoke(it,TaskAction.ACTION_EDIT)
                 }
         }
     }
 
-    fun setOnItemClickListener(listener: (taskId: Int) -> Unit) {
-        this.onItemClickListener = listener
+    fun setOnActionClickListener(listener: (taskId: Int,action:TaskAction) -> Unit) {
+        this.onActionClickListener = listener
     }
 
     inner class MainViewHolder(itemView: View) : ViewHolder(itemView) {

@@ -26,6 +26,8 @@ class AddTaskFragment : BaseFragment() {
 
     private val userDateCalendar = Calendar.getInstance()
 
+    private var createdTask:Task? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +47,9 @@ class AddTaskFragment : BaseFragment() {
         viewModel.addTaskLiveData.observe(viewLifecycleOwner){
             when(it){
                 is DataState.Success -> {
+                    createdTask?.let { task ->
+                        viewModel.setAlarmForTask(task)
+                    }
                     showToast(getString(R.string.added))
                     findNavController().popBackStack()
                 }
@@ -56,28 +61,9 @@ class AddTaskFragment : BaseFragment() {
     private fun initViews() {
         mBinding.btnAddTaskAdd.setOnClickListener {
             if (checkInputValidation())
-                showDatePickerDialog()
+                showTimePickerDialog()
         }
     }
-
-    private fun showDatePickerDialog() {
-        val calendar = Calendar.getInstance()
-        val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val dialog = DatePickerDialog(
-            requireContext(),
-            { _, year, month, dayOfMonth ->
-                userDateCalendar.set(Calendar.YEAR, year)
-                userDateCalendar.set(Calendar.MONTH, month)
-                userDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                showTimePickerDialog()
-            }, currentYear, currentMonth, currentDay
-        )
-        dialog.show()
-    }
-
 
     private fun showTimePickerDialog() {
         val calendar = Calendar.getInstance()
@@ -89,11 +75,8 @@ class AddTaskFragment : BaseFragment() {
             { _, hour, minute ->
                 userDateCalendar.set(Calendar.HOUR_OF_DAY, hour)
                 userDateCalendar.set(Calendar.MINUTE, minute)
-                if (Utils.validateTaskTime(userDateCalendar.timeInMillis)){
-                    viewModel.addNewTask(Task(id = null, title = mBinding.tieAddTaskTitle.text.toString(), description = mBinding.tieAddTaskDescription.text.toString(), userDateCalendar.timeInMillis))
-                }else{
-                    showToast(getString(R.string.wrong_input_time))
-                }
+                createdTask = Task(id = null, title = mBinding.tieAddTaskTitle.text.toString().trim(), description = mBinding.tieAddTaskDescription.text.toString().trim(), userDateCalendar.timeInMillis)
+                viewModel.addNewTask(createdTask!!)
 
             }, currentHour, currentMinute, true
         )
@@ -101,12 +84,12 @@ class AddTaskFragment : BaseFragment() {
     }
 
     private fun checkInputValidation(): Boolean {
-        if (mBinding.tieAddTaskTitle.text.toString().isEmpty()) {
+        if (mBinding.tieAddTaskTitle.text.toString().trim().isEmpty()) {
             showToast(getString(R.string.title_required_message))
             return false
         }
 
-        if (mBinding.tieAddTaskDescription.text.toString().isEmpty()) {
+        if (mBinding.tieAddTaskDescription.text.toString().trim().isEmpty()) {
             showToast(getString(R.string.description_required_message))
             return false
         }

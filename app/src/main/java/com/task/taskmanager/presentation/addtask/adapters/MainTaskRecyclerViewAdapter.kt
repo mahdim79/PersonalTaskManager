@@ -1,6 +1,5 @@
 package com.task.taskmanager.presentation.addtask.adapters
 
-import android.icu.util.Calendar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,12 @@ import com.task.taskmanager.R
 import com.task.taskmanager.databinding.ItemTaskBinding
 import com.task.taskmanager.presentation.utils.TaskAction
 import com.task.taskmanager.utils.Utils
+import java.util.Calendar
 
 class MainTaskRecyclerViewAdapter :
     ListAdapter<Task, MainTaskRecyclerViewAdapter.MainViewHolder>(callback) {
 
-    private lateinit var onActionClickListener: (taskId: Int,action:TaskAction) -> Unit
+    private lateinit var onActionClickListener: (task: Task,action:TaskAction) -> Unit
 
     companion object {
         val callback = object : DiffUtil.ItemCallback<Task>() {
@@ -51,19 +51,19 @@ class MainTaskRecyclerViewAdapter :
         holder.itemTaskBinding.ivItemTaskRemove.setOnClickListener {
             if (::onActionClickListener.isInitialized)
                 item.id?.let {
-                    onActionClickListener.invoke(it,TaskAction.ACTION_REMOVE)
+                    onActionClickListener.invoke(item,TaskAction.ACTION_REMOVE)
                 }
         }
 
         holder.itemTaskBinding.ivItemTaskEdit.setOnClickListener {
             if (::onActionClickListener.isInitialized)
                 item.id?.let {
-                    onActionClickListener.invoke(it,TaskAction.ACTION_EDIT)
+                    onActionClickListener.invoke(item,TaskAction.ACTION_EDIT)
                 }
         }
     }
 
-    fun setOnActionClickListener(listener: (taskId: Int,action:TaskAction) -> Unit) {
+    fun setOnActionClickListener(listener: (task: Task,action:TaskAction) -> Unit) {
         this.onActionClickListener = listener
     }
 

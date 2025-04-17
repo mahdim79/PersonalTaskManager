@@ -2,7 +2,6 @@ package com.task.taskmanager.presentation.updatetask
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,7 @@ import com.task.taskmanager.utils.ArgumentKeys
 import com.task.taskmanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.internal.Util
+import java.util.Calendar
 
 @AndroidEntryPoint
 class UpdateTaskFragment : BaseFragment() {
@@ -90,21 +90,17 @@ class UpdateTaskFragment : BaseFragment() {
     private fun setupButtons() {
         mBinding.btnUpdateTaskUpdate.setOnClickListener {
             if (validateInput()){
-                if (Utils.validateTaskTime(editedCalendar.timeInMillis)){
-                    selectedTask?.let { updatedTask ->
-                        updatedTask.title = mBinding.tieUpdateTaskTitle.text.toString()
-                        updatedTask.description = mBinding.tieUpdateTaskDescription.text.toString()
-                        updatedTask.time = editedCalendar.timeInMillis
-                        viewModel.updateTask(updatedTask)
-                    }
-                }else{
-                    showToast(getString(R.string.wrong_input_time))
+                selectedTask?.let { updatedTask ->
+                    updatedTask.title = mBinding.tieUpdateTaskTitle.text.toString().trim()
+                    updatedTask.description = mBinding.tieUpdateTaskDescription.text.toString().trim()
+                    updatedTask.time = editedCalendar.timeInMillis
+                    viewModel.updateTask(updatedTask)
                 }
             }
         }
 
         mBinding.btnUpdateTaskChangeTime.setOnClickListener {
-            showDatePickerDialog()
+            showTimePickerDialog()
         }
     }
 
@@ -118,35 +114,16 @@ class UpdateTaskFragment : BaseFragment() {
         }
     }
 
-    private fun showDatePickerDialog() {
-        val taskYear = editedCalendar.get(java.util.Calendar.YEAR)
-        val taskMonth = editedCalendar.get(java.util.Calendar.MONTH)
-        val taskDay = editedCalendar.get(java.util.Calendar.DAY_OF_MONTH)
-
-        val dialog = DatePickerDialog(
-            requireContext(),
-            { _, year, month, dayOfMonth ->
-                editedCalendar.set(java.util.Calendar.YEAR, year)
-                editedCalendar.set(java.util.Calendar.MONTH, month)
-                editedCalendar.set(java.util.Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateTimeTextView()
-                showTimePickerDialog()
-            }, taskYear, taskMonth, taskDay
-        )
-        dialog.show()
-    }
-
-
     private fun showTimePickerDialog() {
-        val calendar = java.util.Calendar.getInstance()
-        val currentHour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
-        val currentMinute = calendar.get(java.util.Calendar.MINUTE)
+        val calendar = Calendar.getInstance()
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMinute = calendar.get(Calendar.MINUTE)
 
         val dialog = TimePickerDialog(
             requireContext(),
             { _, hour, minute ->
-                editedCalendar.set(java.util.Calendar.HOUR_OF_DAY, hour)
-                editedCalendar.set(java.util.Calendar.MINUTE, minute)
+                editedCalendar.set(Calendar.HOUR_OF_DAY, hour)
+                editedCalendar.set(Calendar.MINUTE, minute)
                 updateTimeTextView()
             }, currentHour, currentMinute, true
         )
@@ -154,12 +131,12 @@ class UpdateTaskFragment : BaseFragment() {
     }
 
     private fun validateInput(): Boolean {
-        if (mBinding.tieUpdateTaskTitle.text.toString().isEmpty()) {
+        if (mBinding.tieUpdateTaskTitle.text.toString().trim().isEmpty()) {
             showToast(getString(R.string.title_required_message))
             return false
         }
 
-        if (mBinding.tieUpdateTaskDescription.text.toString().isEmpty()) {
+        if (mBinding.tieUpdateTaskDescription.text.toString().trim().isEmpty()) {
             showToast(getString(R.string.description_required_message))
             return false
         }

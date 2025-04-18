@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:background="?colorBackground"
-    android:paddingTop="34dp"
     tools:context=".presentation.mainactivity.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView

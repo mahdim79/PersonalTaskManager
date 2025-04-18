@@ -49,11 +49,7 @@ class HomeFragmentViewModel @Inject constructor(
         }
     }
 
-    fun getDarkModeEnabled(callBack:(Boolean) -> Unit) {
-        viewModelScope.launch {
-            settingManager.isDarkMode.collect {callBack.invoke(it)}
-        }
-    }
+    suspend fun getDarkModeEnabled():Boolean = settingManager.getDarkMode()
 
     fun setDarkModeEnabled(enabled:Boolean){
         viewModelScope.launch {

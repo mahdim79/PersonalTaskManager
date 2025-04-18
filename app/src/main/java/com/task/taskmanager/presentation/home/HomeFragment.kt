@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.task.core.domain.task.Task
 import com.task.core.helper.DataState
 import com.task.taskmanager.R
+import com.task.taskmanager.TaskApplication
 import com.task.taskmanager.databinding.FragmentHomeBinding
 import com.task.taskmanager.presentation.addtask.adapters.MainTaskRecyclerViewAdapter
 import com.task.taskmanager.presentation.base.BaseFragment
 import com.task.taskmanager.presentation.utils.TaskAction
 import com.task.taskmanager.utils.AlarmHandler
 import com.task.taskmanager.utils.ArgumentKeys
+import com.task.taskmanager.utils.SettingManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,20 +47,8 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configureAppTheme()
         initViews()
         observeLiveData()
-    }
-
-    private fun configureAppTheme() {
-        viewModel.getDarkModeEnabled {
-            mBinding.scHomeTheme.isChecked = it
-            if (it) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
     }
 
     private fun observeLiveData() {
@@ -101,8 +92,15 @@ class HomeFragment : BaseFragment() {
             findNavController().navigate(R.id.action_homeFragment_to_addTaskFragment)
         }
 
+        mBinding.scHomeTheme.isChecked = (requireActivity().application as TaskApplication).isInitialDarkModeEnable
+
         mBinding.scHomeTheme.setOnCheckedChangeListener { _, isChecked ->
             viewModel.setDarkModeEnabled(isChecked)
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
     }
 

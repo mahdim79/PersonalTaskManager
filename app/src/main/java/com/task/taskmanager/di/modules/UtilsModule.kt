@@ -2,6 +2,7 @@ package com.task.taskmanager.di.modules
 
 import android.content.Context
 import com.task.taskmanager.utils.AlarmHandler
+import com.task.taskmanager.utils.IsOnline
 import com.task.taskmanager.utils.NotificationHandler
 import com.task.taskmanager.utils.PermissionHandler
 import com.task.taskmanager.utils.SettingManager
@@ -38,5 +39,11 @@ class UtilsModule {
     @Singleton
     fun provideSettingManager(@ApplicationContext context: Context):SettingManager{
         return SettingManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIsOnline(@ApplicationContext context: Context):IsOnline{
+        return IsOnline(context)
     }
 }

@@ -8,9 +8,12 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.task.core.domain.task.Task;
+import com.task.core.interactors.GetLocalTasks;
 import com.task.taskmanager.receivers.NotifyReceiver;
 
 import java.util.Calendar;
+
+import javax.inject.Inject;
 
 public class AlarmHandler {
     private AlarmManager alarmManager;
@@ -18,8 +21,7 @@ public class AlarmHandler {
 
     private String TAG = "AlarmHandler";
 
-    private final Long DAILY_MILLIS = 86400000L;
-
+    @Inject
     public AlarmHandler(Context context){
         this.context = context;
         this.alarmManager = ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE));
@@ -39,19 +41,15 @@ public class AlarmHandler {
 
     public void setAlarmForTask(Task task){
         long validatedTime = getValidatedTime(task.getTime());
+
+        cancelTaskAlarm(task);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,validatedTime,createPendingIntentForTask(task));
-        Log.i(TAG,"setAlarmForTask");
     }
 
     public void cancelTaskAlarm(Task task){
         alarmManager.cancel(createPendingIntentForTask(task));
-        Log.i(TAG,"cancelTaskAlarm");
     }
 
-    public void updateTaskTime(Task task){
-        cancelTaskAlarm(task);
-        setAlarmForTask(task);
-    }
 
     private long getValidatedTime(Long time){
         Calendar taskCalendar = Calendar.getInstance();

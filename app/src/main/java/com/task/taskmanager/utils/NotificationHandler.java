@@ -15,11 +15,15 @@ import com.task.taskmanager.presentation.mainactivity.MainActivity;
 
 import javax.inject.Inject;
 
+import dagger.assisted.AssistedInject;
+import dagger.hilt.android.AndroidEntryPoint;
+
 public class NotificationHandler {
 
     private Context context;
     private NotificationManager notificationManager;
     PermissionHandler permissionHandler;
+    @Inject
     public NotificationHandler(Context context){
         this.context = context;
         this.permissionHandler = new PermissionHandler(context);

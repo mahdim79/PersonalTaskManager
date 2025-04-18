@@ -49,7 +49,7 @@ class UpdateTaskFragmentViewModel @Inject constructor(
     }
 
     fun updateTaskTime(task: Task){
-        alarmHandler.updateTaskTime(task)
+        alarmHandler.setAlarmForTask(task)
     }
 
 }

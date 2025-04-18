@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import javax.inject.Inject;
+
+import dagger.assisted.AssistedInject;
+
 public class PermissionHandler {
 
     private Context context;
+    @Inject
     public PermissionHandler(Context context){
         this.context = context;
     }

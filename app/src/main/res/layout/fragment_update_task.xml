@@ -78,9 +78,9 @@
             <com.task.taskmanager.presentation.utils.TextViewRegular
                 android:id="@+id/tv_updateTask_time"
                 android:layout_width="wrap_content"
-                android:minWidth="100dp"
                 android:layout_gravity="center"
-                tools:text="1401/04/04 - 13:25"
+                android:layout_marginStart="8dp"
+                tools:text="13:25"
                 android:layout_height="wrap_content"/>
 
             <com.task.taskmanager.presentation.utils.ButtonRegular
@@ -90,7 +90,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginHorizontal="25dp"
+                android:layout_marginHorizontal="15dp"
                 android:layout_gravity="center"
                 android:textColor="?buttonTextColor"
                 android:text="@string/changeTime"

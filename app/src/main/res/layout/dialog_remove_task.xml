@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="340dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="0dp"
+    android:id="@+id/cv_taskDetails_container"
+    app:cardCornerRadius="16dp"
+    android:backgroundTint="?colorBackground"
+    android:layout_height="170dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.task.taskmanager.presentation.utils.TextViewBold
+            android:layout_width="match_parent"
+            android:text="@string/remove_task"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginVertical="15dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:id="@+id/v_itemTask_divider"
+            android:layout_width="match_parent"
+            android:background="?dividerBackgroundColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_height="1dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.task.taskmanager.presentation.utils.TextViewRegular
+                android:layout_width="match_parent"
+                android:text="@string/remove_task_message"
+                android:textSize="15sp"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="@+id/btn_removeTask_yes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:justificationMode="inter_word"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_height="wrap_content"/>
+
+            <com.task.taskmanager.presentation.utils.ButtonRegular
+                android:id="@+id/btn_removeTask_cancel"
+                android:layout_width="wrap_content"
+                android:textColor="?android:textColor"
+                style="@style/Widget.Material3.Button.TextButton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_removeTask_yes"
+                android:text="@string/cancel"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"/>
+
+            <com.task.taskmanager.presentation.utils.ButtonRegular
+                android:id="@+id/btn_removeTask_yes"
+                android:layout_width="wrap_content"
+                android:textColor="?buttonTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_removeTask_cancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/yes"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/background_button"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

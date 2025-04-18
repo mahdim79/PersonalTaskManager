@@ -6,4 +6,6 @@
     <color name="gray">#2C2C2C</color>
     <color name="grayDark">#212121</color>
     <color name="blue">#1e90ff</color>
+    <color name="whiteLowTransparency">#0AFFFFFF</color>
+    <color name="blackLowTransparency">#09000000</color>
 </resources>

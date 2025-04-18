@@ -1,4 +1,4 @@
-package com.task.taskmanager.presentation.addtask.adapters
+package com.task.taskmanager.presentation.home.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +17,7 @@ class MainTaskRecyclerViewAdapter :
     ListAdapter<Task, MainTaskRecyclerViewAdapter.MainViewHolder>(callback) {
 
     private lateinit var onActionClickListener: (task: Task,action:TaskAction) -> Unit
+    private lateinit var onItemClickListener: (task: Task) -> Unit
 
     companion object {
         val callback = object : DiffUtil.ItemCallback<Task>() {
@@ -42,6 +43,7 @@ class MainTaskRecyclerViewAdapter :
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val item = getItem(position)
+
         holder.itemTaskBinding.tvTaskItemTitle.text = item.title
         holder.itemTaskBinding.tvTaskItemDescription.text = item.description
 
@@ -55,16 +57,33 @@ class MainTaskRecyclerViewAdapter :
                 }
         }
 
+        holder.itemView.setOnClickListener {
+            if (::onItemClickListener.isInitialized)
+                item.id?.let {
+                    onItemClickListener.invoke(item)
+                }
+        }
+
         holder.itemTaskBinding.ivItemTaskEdit.setOnClickListener {
             if (::onActionClickListener.isInitialized)
                 item.id?.let {
                     onActionClickListener.invoke(item,TaskAction.ACTION_EDIT)
                 }
         }
+
+
+        if (position == currentList.lastIndex)
+            holder.itemTaskBinding.vItemTaskDivider.visibility = View.GONE
+        else
+            holder.itemTaskBinding.vItemTaskDivider.visibility = View.VISIBLE
     }
 
     fun setOnActionClickListener(listener: (task: Task,action:TaskAction) -> Unit) {
         this.onActionClickListener = listener
+    }
+
+    fun setOnItemClickListener(listener: (task: Task) -> Unit) {
+        this.onItemClickListener = listener
     }
 
     inner class MainViewHolder(itemView: View) : ViewHolder(itemView) {

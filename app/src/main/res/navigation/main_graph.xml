@@ -10,9 +10,17 @@
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_addTaskFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:destination="@id/addTaskFragment" />
         <action
             android:id="@+id/action_homeFragment_to_updateTaskFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:destination="@id/updateTaskFragment" />
     </fragment>
     <fragment

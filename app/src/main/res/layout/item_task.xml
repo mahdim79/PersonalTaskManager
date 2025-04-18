@@ -73,7 +73,7 @@
     <View
         android:id="@+id/v_itemTask_divider"
         android:layout_width="match_parent"
-        android:background="?colorPrimaryVariant"
+        android:background="?dividerBackgroundColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginHorizontal="15dp"

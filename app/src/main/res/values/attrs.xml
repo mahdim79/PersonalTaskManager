@@ -6,4 +6,5 @@
     <attr name="colorBackground" format="reference"/>
     <attr name="textInputBackgroundFocused" format="reference"/>
     <attr name="textInputBackgroundNotFocused" format="reference"/>
+    <attr name="dividerBackgroundColor" format="reference"/>
 </resources>

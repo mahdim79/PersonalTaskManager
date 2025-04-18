@@ -12,6 +12,7 @@
         <item name="colorBackground">@color/gray</item>
         <item name="textInputBackgroundFocused">@color/gray</item>
         <item name="textInputBackgroundNotFocused">@color/grayDark</item>
+        <item name="dividerBackgroundColor">@color/whiteLowTransparency</item>
         <item name="iconTint">@color/white</item>
     </style>
 

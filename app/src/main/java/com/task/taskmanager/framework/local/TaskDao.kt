@@ -10,7 +10,7 @@ import com.task.taskmanager.framework.local.entities.TaskEntity
 @Dao
 interface TaskDao {
     @Insert(entity = TaskEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNewTask(task: TaskEntity)
+    suspend fun addNewTask(task: TaskEntity):Long
 
     @Query("DELETE FROM tasks WHERE id = :id")
     suspend fun deleteTask(id: Int)

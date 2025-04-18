@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.task.core.domain.task.Task;
 import com.task.taskmanager.receivers.NotifyReceiver;
 
@@ -26,8 +27,9 @@ public class AlarmHandler {
 
     private PendingIntent createPendingIntentForTask(Task task){
         Intent intent = new Intent(context, NotifyReceiver.class);
-        intent.putExtra(NotifyReceiver.EXTRA_TASK_NAME,task.getTitle());
-        intent.putExtra(NotifyReceiver.EXTRA_TASK_ID,task.getId());
+
+        String taskStr = new Gson().toJson(task,Task.class);
+        intent.putExtra(NotifyReceiver.EXTRA_TASK,taskStr);
 
         int requestCode = 0;
         if (task.getId() != null)
@@ -36,13 +38,37 @@ public class AlarmHandler {
     }
 
     public void setAlarmForTask(Task task){
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,task.getTime(),DAILY_MILLIS,createPendingIntentForTask(task));
+        long validatedTime = getValidatedTime(task.getTime());
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,validatedTime,createPendingIntentForTask(task));
         Log.i(TAG,"setAlarmForTask");
     }
 
     public void cancelTaskAlarm(Task task){
         alarmManager.cancel(createPendingIntentForTask(task));
         Log.i(TAG,"cancelTaskAlarm");
+    }
+
+    public void updateTaskTime(Task task){
+        cancelTaskAlarm(task);
+        setAlarmForTask(task);
+    }
+
+    private long getValidatedTime(Long time){
+        Calendar taskCalendar = Calendar.getInstance();
+        taskCalendar.setTimeInMillis(time);
+
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTimeInMillis(System.currentTimeMillis());
+
+        currentCalendar.set(Calendar.HOUR_OF_DAY,taskCalendar.get(Calendar.HOUR_OF_DAY));
+        currentCalendar.set(Calendar.MINUTE,taskCalendar.get(Calendar.MINUTE));
+        currentCalendar.set(Calendar.SECOND,0);
+        currentCalendar.set(Calendar.MILLISECOND,0);
+
+        if (currentCalendar.before(Calendar.getInstance()))
+            currentCalendar.add(Calendar.DAY_OF_MONTH,1);
+
+        return currentCalendar.getTimeInMillis();
     }
 
 }

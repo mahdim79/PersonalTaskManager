@@ -14,8 +14,8 @@ class TaskLocalDataSourceImpl(private val taskDao: TaskDao,private val taskLocal
         return taskLocalMapper.mapToDomain(taskDao.fetchTaskById(id).first())
     }
 
-    override suspend fun addNewTask(task: Task) {
-        taskDao.addNewTask(taskLocalMapper.mapToEntity(task))
+    override suspend fun addNewTask(task: Task):Long {
+        return taskDao.addNewTask(taskLocalMapper.mapToEntity(task))
     }
 
     override suspend fun removeTask(id: Int) {

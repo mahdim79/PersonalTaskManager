@@ -69,6 +69,7 @@ class UpdateTaskFragment : BaseFragment() {
         viewModel.updateTaskLiveData.observe(viewLifecycleOwner){
             when(it){
                 is DataState.Success -> {
+                    viewModel.updateTaskTime(it.value)
                     showToast(getString(R.string.Updated))
                     findNavController().popBackStack()
                 }

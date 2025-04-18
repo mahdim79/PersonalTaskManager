@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddTaskFragmentViewModel @Inject constructor(private val addTask: AddTask,private val alarmHandler: AlarmHandler) : ViewModel() {
 
-    val addTaskLiveData = MutableLiveData<DataState<Unit>>()
+    val addTaskLiveData = MutableLiveData<DataState<Long>>()
 
     fun addNewTask(task: Task){
         viewModelScope.launch(Dispatchers.IO) {

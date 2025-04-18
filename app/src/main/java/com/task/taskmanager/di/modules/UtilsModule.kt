@@ -4,6 +4,7 @@ import android.content.Context
 import com.task.taskmanager.utils.AlarmHandler
 import com.task.taskmanager.utils.NotificationHandler
 import com.task.taskmanager.utils.PermissionHandler
+import com.task.taskmanager.utils.SettingManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +32,11 @@ class UtilsModule {
     @Singleton
     fun provideAlarmHandler(@ApplicationContext context: Context):AlarmHandler{
         return AlarmHandler(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingManager(@ApplicationContext context: Context):SettingManager{
+        return SettingManager(context)
     }
 }

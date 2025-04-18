@@ -81,6 +81,9 @@ dependencies {
     // Region Gson
     implementation(libs.gson)
 
+    // Region Datastore
+    implementation(libs.datastore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

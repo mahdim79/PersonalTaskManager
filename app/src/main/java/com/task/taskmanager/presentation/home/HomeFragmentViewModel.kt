@@ -7,7 +7,7 @@ import com.task.core.domain.task.Task
 import com.task.core.helper.DataState
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.RemoveTask
-import com.task.taskmanager.utils.AlarmHandler
+import com.task.taskmanager.utils.SettingManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -15,12 +15,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeFragmentViewModel @Inject constructor(private val getLocalTasks: GetLocalTasks,private val removeTask: RemoveTask): ViewModel() {
+class HomeFragmentViewModel @Inject constructor(
+    private val getLocalTasks: GetLocalTasks,
+    private val removeTask: RemoveTask,
+    private val settingManager: SettingManager
+) : ViewModel() {
 
     val localTasksLiveData = MutableLiveData<DataState<List<Task>>>()
     val removeTaskLiveData = MutableLiveData<DataState<Task>>()
 
-    fun getLocalTasks(){
+    fun getLocalTasks() {
         viewModelScope.launch(Dispatchers.IO) {
             getLocalTasks.invoke()
                 .catch { localTasksLiveData.postValue(DataState.LocalError(it.message)) }
@@ -30,18 +34,30 @@ class HomeFragmentViewModel @Inject constructor(private val getLocalTasks: GetLo
         }
     }
 
-    fun removeTask(task: Task){
+    fun removeTask(task: Task) {
         task.id?.let { tId ->
             viewModelScope.launch(Dispatchers.IO) {
                 removeTask.invoke(tId)
                     .catch { removeTaskLiveData.postValue(DataState.LocalError(it.message)) }
                     .collect {
                         if (it is DataState.Success)
-                           removeTaskLiveData.postValue(DataState.Success(task))
+                            removeTaskLiveData.postValue(DataState.Success(task))
                         else
                             removeTaskLiveData.postValue(DataState.LocalError())
                     }
             }
+        }
+    }
+
+    fun getDarkModeEnabled(callBack:(Boolean) -> Unit) {
+        viewModelScope.launch {
+            settingManager.isDarkMode.collect {callBack.invoke(it)}
+        }
+    }
+
+    fun setDarkModeEnabled(enabled:Boolean){
+        viewModelScope.launch {
+            settingManager.setDarkMode(enabled)
         }
     }
 }

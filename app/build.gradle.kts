@@ -70,8 +70,8 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
 
     // Region Viewmodel
-    implementation(libs.lifecycle.viewmodel)
-    ksp (libs.lifecycle.compiler)
+  //  implementation(libs.lifecycle.viewmodel)
+   // ksp (libs.lifecycle.compiler)
 
     // Region Navigation
     implementation(libs.navigation.fragment)
@@ -83,6 +83,11 @@ dependencies {
 
     // Region Datastore
     implementation(libs.datastore)
+
+    // Region work manager
+    implementation(libs.work.manager)
+    implementation(libs.hilt.worker)
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

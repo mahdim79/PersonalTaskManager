@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import javax.inject.Inject
 import androidx.core.graphics.drawable.toDrawable
+import com.task.taskmanager.databinding.DialogRemoveTaskBinding
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment() {
@@ -163,18 +164,32 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun showRemoveTaskDialog(task: Task) {
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.remove_task))
-            .setMessage(getString(R.string.remove_task_message))
-            .setNegativeButton(getString(R.string.cancel)) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
-            .setPositiveButton(getString(R.string.remove)) { dialogInterface, _ ->
+
+        val dialog = Dialog(requireContext())
+        val view = DialogRemoveTaskBinding.inflate(layoutInflater)
+
+        view.apply {
+            btnRemoveTaskYes.setOnClickListener {
                 viewModel.removeTask(task)
-                dialogInterface.dismiss()
+                dialog.dismiss()
             }
-            .create()
-        dialog.show()
+            btnRemoveTaskCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+
+        dialog.apply {
+            setContentView(view.root)
+
+            val width = (resources.displayMetrics.widthPixels * 0.9).toInt()
+            val dialogParams: ViewGroup.LayoutParams = view.cvTaskDetailsContainer.layoutParams
+            dialogParams.width = width
+            view.cvTaskDetailsContainer.layoutParams = dialogParams
+
+            window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+            window?.setDimAmount(0.4f)
+            dialog.show()
+        }
     }
 
 }

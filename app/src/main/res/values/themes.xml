@@ -13,6 +13,7 @@
         <item name="textInputBackgroundFocused">@color/white</item>
         <item name="textInputBackgroundNotFocused">@color/whiteShadow</item>
         <item name="dividerBackgroundColor">@color/blackLowTransparency</item>
+        <item name="android:textColor">@color/black</item>
         <item name="iconTint">@color/gray</item>
     </style>
 

@@ -48,6 +48,7 @@ class AddTaskFragment : BaseFragment() {
             when(it){
                 is DataState.Success -> {
                     createdTask?.let { task ->
+                        task.id = it.value.toInt()
                         viewModel.setAlarmForTask(task)
                     }
                     showToast(getString(R.string.added))

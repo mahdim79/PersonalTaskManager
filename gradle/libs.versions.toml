@@ -19,6 +19,7 @@ navigationVersion = "2.8.9"
 fragmentVersion = "1.8.6"
 jetbrainsKotlinJvm = "2.1.0"
 gsonVersion = "2.10.1"
+dataStoreVersion = "1.1.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,7 @@ lifecycle-compiler = {group = "androidx.lifecycle", name = "lifecycle-compiler",
 retrofit = {group = "com.squareup.retrofit2",name = "retrofit",version.ref = "retrofit"}
 retrofit-converter-gson = {group = "com.squareup.retrofit2",name = "converter-gson",version.ref = "retrofit"}
 gson = {group = "com.google.code.gson",name = "gson",version.ref = "gsonVersion"}
+datastore = {group = "androidx.datastore",name = "datastore-preferences",version.ref = "dataStoreVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

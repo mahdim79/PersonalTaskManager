@@ -19,4 +19,5 @@
     <string name="no_task_to_show">Nothing to show!</string>
     <string name="remove_task_message">Are you sure you want to remove this task?</string>
     <string name="notificationContent">Hey! its time to do this task: %s</string>
+    <string name="night_mode">Night Mode</string>
 </resources>

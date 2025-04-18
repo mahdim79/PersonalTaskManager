@@ -2,24 +2,27 @@ package com.task.taskmanager.presentation.home
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.task.core.domain.task.Task
 import com.task.core.helper.DataState
 import com.task.taskmanager.R
+import com.task.taskmanager.TaskApplication
 import com.task.taskmanager.databinding.FragmentHomeBinding
 import com.task.taskmanager.presentation.addtask.adapters.MainTaskRecyclerViewAdapter
 import com.task.taskmanager.presentation.base.BaseFragment
 import com.task.taskmanager.presentation.utils.TaskAction
 import com.task.taskmanager.utils.AlarmHandler
 import com.task.taskmanager.utils.ArgumentKeys
-import com.task.taskmanager.utils.MockData
+import com.task.taskmanager.utils.SettingManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,29 +53,31 @@ class HomeFragment : BaseFragment() {
 
     private fun observeLiveData() {
 
-        viewModel.removeTaskLiveData.observe(viewLifecycleOwner){
+        viewModel.removeTaskLiveData.observe(viewLifecycleOwner) {
             if (it == null)
                 return@observe
 
-            when(it){
+            when (it) {
                 is DataState.Success -> {
                     alarmHandler.cancelTaskAlarm(it.value)
                     viewModel.getLocalTasks()
                     viewModel.removeTaskLiveData.value = null
                 }
+
                 else -> showToast(getString(R.string.error))
             }
         }
 
-        viewModel.localTasksLiveData.observe(viewLifecycleOwner){
-            when(it){
+        viewModel.localTasksLiveData.observe(viewLifecycleOwner) {
+            when (it) {
                 is DataState.Success -> {
                     taskRecyclerViewAdapter.submitList(it.value)
-                    if(it.value.isEmpty())
+                    if (it.value.isEmpty())
                         mBinding.tvHomeNothing.visibility = View.VISIBLE
                     else
                         mBinding.tvHomeNothing.visibility = View.GONE
                 }
+
                 else -> showToast(getString(R.string.error))
             }
         }
@@ -86,6 +91,17 @@ class HomeFragment : BaseFragment() {
         mBinding.fabHomeAddTask.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addTaskFragment)
         }
+
+        mBinding.scHomeTheme.isChecked = (requireActivity().application as TaskApplication).isInitialDarkModeEnable
+
+        mBinding.scHomeTheme.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.setDarkModeEnabled(isChecked)
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
     }
 
     private fun initRecyclerViewAdapter() {
@@ -94,12 +110,15 @@ class HomeFragment : BaseFragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         taskRecyclerViewAdapter.setOnActionClickListener { task, action ->
-            when(action){
+            when (action) {
                 TaskAction.ACTION_EDIT -> {
                     task.id?.let { tId ->
-                        findNavController().navigate(R.id.action_homeFragment_to_updateTaskFragment, Bundle().apply { putInt(ArgumentKeys.KEY_TASK_ID,tId) })
+                        findNavController().navigate(
+                            R.id.action_homeFragment_to_updateTaskFragment,
+                            Bundle().apply { putInt(ArgumentKeys.KEY_TASK_ID, tId) })
                     }
                 }
+
                 TaskAction.ACTION_REMOVE -> showRemoveTaskDialog(task)
             }
         }
@@ -107,7 +126,7 @@ class HomeFragment : BaseFragment() {
         mBinding.rvHomeTasks.adapter = taskRecyclerViewAdapter
     }
 
-    private fun showRemoveTaskDialog(task:Task) {
+    private fun showRemoveTaskDialog(task: Task) {
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.remove_task))
             .setMessage(getString(R.string.remove_task_message))

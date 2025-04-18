@@ -37,7 +37,6 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
-        configureAppTheme()
         configureAppNavigation()
         checkAppPermissions()
     }
@@ -49,10 +48,6 @@ class MainActivity : BaseActivity() {
 
     private fun configureAppNavigation() {
         navController = (supportFragmentManager.findFragmentById(R.id.fcv_main_navHost) as NavHostFragment).navController
-    }
-
-    private fun configureAppTheme() {
-
     }
 
     override fun onSupportNavigateUp(): Boolean {

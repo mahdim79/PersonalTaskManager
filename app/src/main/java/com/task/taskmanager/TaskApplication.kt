@@ -4,9 +4,12 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
+import com.task.taskmanager.utils.Constants
 import com.task.taskmanager.utils.SettingManager
 import com.task.taskmanager.worker.SyncWorker
 import com.task.taskmanager.worker.SyncWorkerFactory
@@ -32,13 +35,18 @@ class TaskApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        initAppCenter()
         configureAppTheme()
         startSyncWorker()
     }
 
+    private fun initAppCenter() {
+        AppCenter.start(this, Constants.APP_CENTER_DSN, Analytics::class.java, Crashes::class.java)
+    }
+
     private fun startSyncWorker() {
         val request = PeriodicWorkRequestBuilder<SyncWorker>(15, TimeUnit.MINUTES)
-            .setInitialDelay(15,TimeUnit.SECONDS)
+            .setInitialDelay(15, TimeUnit.SECONDS)
             .build()
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork(SYNC_WORKER_NAME, ExistingPeriodicWorkPolicy.KEEP, request)

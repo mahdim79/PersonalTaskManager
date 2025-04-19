@@ -5,9 +5,11 @@ import com.task.core.helper.DataState
 import com.task.core.interactors.AddMultipleTasks
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.GetRemoteTasks
+import com.task.core.interactors.RemoveRemoteTasks
+import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
-class DataSyncManager @Inject constructor(){
+class DataSyncManager @Inject constructor() {
 
     @Inject
     lateinit var getRemoteTasks: GetRemoteTasks
@@ -16,7 +18,7 @@ class DataSyncManager @Inject constructor(){
     lateinit var getLocalTasks: GetLocalTasks
 
     @Inject
-    lateinit var isOnline:IsOnline
+    lateinit var isOnline: IsOnline
 
     @Inject
     lateinit var alarmHandler: AlarmHandler
@@ -24,52 +26,93 @@ class DataSyncManager @Inject constructor(){
     @Inject
     lateinit var addMultipleTasks: AddMultipleTasks
 
+    @Inject
+    lateinit var removeRemoteTasks: RemoveRemoteTasks
+
+    private lateinit var onSuccessListener: () -> Unit
+    private lateinit var onFailureListener: () -> Unit
+
     suspend fun startSyncOperation() {
         getRemoteTasks.invoke(isOnline.hasNetworkConnection())
             .collect {
-                if (it is DataState.Success) {
-                    syncWithLocalDb(it.value)
+                when (it) {
+                    is DataState.Success -> syncWithLocalDb(it.value)
+                    is DataState.LocalError -> callFailureListener()
+                    is DataState.NetworkError -> callFailureListener()
+                    is DataState.NoInternet -> callFailureListener()
+                    else -> {}
                 }
             }
     }
 
-    private suspend fun syncWithLocalDb(remoteTasks: List<Task>){
-        getLocalTasks.invoke().collect {
-            if (it is DataState.Success) {
-                val newTasks = calculateNotSyncedTasks(it.value, remoteTasks)
-                if (newTasks.isNotEmpty()) {
-                    addNewRemoteTasksToLocalDb(newTasks)
-                }
+    private suspend fun syncWithLocalDb(newRemoteTasks: List<Task>) {
+
+        // get all local tasks
+        getLocalTasks.invoke().collect { localTasks ->
+            if (localTasks is DataState.Success) {
+                // remove all remote tasks
+                removeRemoteTasks.invoke()
+                    .catch { callFailureListener() }
+                    .collect { removeResult ->
+                        if (removeResult is DataState.Success) {
+
+                            // disable alarm for removed remote tasks
+                            localTasks.value.filter { it.taskId != null }.forEach { task ->
+                                alarmHandler.cancelTaskAlarm(task)
+                            }
+
+                            // add new remote tasks
+                            addMultipleTasks.invoke(newRemoteTasks)
+                                .catch { callFailureListener() }
+                                .collect { addMultipleResult ->
+                                    if (addMultipleResult is DataState.Success) {
+                                        // reset alarms for remote tasks
+                                        resetRemoteTaskAlarms()
+                                    } else {
+                                        callFailureListener()
+                                    }
+                                }
+                        } else {
+                            callFailureListener()
+                        }
+                    }
+
+            } else {
+                callFailureListener()
             }
         }
     }
 
-    private suspend fun resetAllAlarms() {
+    private suspend fun resetRemoteTaskAlarms() {
         getLocalTasks.invoke()
-            .collect {
-                if (it is DataState.Success) {
-                    it.value.forEach { task ->
+            .collect { tasks ->
+                if (tasks is DataState.Success) {
+                    tasks.value.filter { it.taskId != null }.forEach { task ->
                         alarmHandler.setAlarmForTask(task)
                     }
+                    callSuccessListener()
+                } else {
+                    callFailureListener()
                 }
             }
     }
 
-    private suspend fun addNewRemoteTasksToLocalDb(newTasks: List<Task>) {
-        addMultipleTasks.invoke(newTasks)
-            .collect {
-                if (it is DataState.Success) {
-                    if (it.value.isNotEmpty())
-                        resetAllAlarms()
-                }
-            }
+    private fun callFailureListener() {
+        if (::onFailureListener.isInitialized)
+            onFailureListener.invoke()
     }
 
-    private fun calculateNotSyncedTasks(
-        localTasks: List<Task>,
-        remoteTasks: List<Task>
-    ): List<Task> {
-        val existingTaskIds = localTasks.mapNotNull { it.taskId }
-        return remoteTasks.filter { !existingTaskIds.contains(it.taskId) }
+    private fun callSuccessListener() {
+        if (::onSuccessListener.isInitialized)
+            onSuccessListener.invoke()
     }
+
+    fun setOnSuccessListener(onSuccessListener: () -> Unit) {
+        this.onSuccessListener = onSuccessListener
+    }
+
+    fun setOnFailureListener(onFailureListener: () -> Unit) {
+        this.onFailureListener = onFailureListener
+    }
+
 }

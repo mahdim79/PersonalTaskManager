@@ -7,6 +7,7 @@ interface TaskLocalDataSource {
     suspend fun getTaskById(id:Int):Task
     suspend fun addNewTask(task: Task):Long
     suspend fun addMultipleTasks(tasks: List<Task>):List<Long>
+    suspend fun removeRemoteTasks()
     suspend fun removeTask(id:Int)
     suspend fun updateTask(task: Task)
 }

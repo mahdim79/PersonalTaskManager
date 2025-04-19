@@ -1,5 +1,6 @@
 package com.task.taskmanager.framework.local.datasources
 
+import android.util.Log
 import com.task.core.data.datasources.local.TaskLocalDataSource
 import com.task.core.domain.task.Task
 import com.task.taskmanager.framework.local.TaskDao
@@ -20,6 +21,10 @@ class TaskLocalDataSourceImpl(private val taskDao: TaskDao,private val taskLocal
 
     override suspend fun addMultipleTasks(tasks: List<Task>): List<Long> {
         return taskDao.addMultipleTasks(taskLocalMapper.mapToEntityList(tasks))
+    }
+
+    override suspend fun removeRemoteTasks() {
+        taskDao.deleteRemoteTasks()
     }
 
     override suspend fun removeTask(id: Int) {

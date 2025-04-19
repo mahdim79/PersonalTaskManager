@@ -22,6 +22,7 @@ gsonVersion = "2.10.1"
 dataStoreVersion = "1.1.4"
 workManagerVersion = "2.9.0"
 hiltWorker = "1.0.0"
+swipRefreshVersion = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,8 +42,6 @@ room-runtime = {group = "androidx.room" ,name = "room-runtime" ,version.ref = "r
 room-ktx = {group = "androidx.room" ,name = "room-ktx" ,version.ref = "roomVersion"}
 room-compiler = {group = "androidx.room", name = "room-compiler",version.ref = "roomVersion"}
 kotlinx-coroutine-android = {group = "org.jetbrains.kotlinx" ,name = "kotlinx-coroutines-android" ,version.ref = "kotlinxCoroutineVersion"}
-lifecycle-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel",version.ref = "lifecycle_version"}
-lifecycle-compiler = {group = "androidx.lifecycle", name = "lifecycle-compiler",version.ref = "lifecycle_version"}
 retrofit = {group = "com.squareup.retrofit2",name = "retrofit",version.ref = "retrofit"}
 retrofit-converter-gson = {group = "com.squareup.retrofit2",name = "converter-gson",version.ref = "retrofit"}
 gson = {group = "com.google.code.gson",name = "gson",version.ref = "gsonVersion"}
@@ -50,6 +49,7 @@ datastore = {group = "androidx.datastore",name = "datastore-preferences",version
 work-manager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManagerVersion" }
 hilt-worker = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWorker" }
 hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWorker" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipRefreshVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

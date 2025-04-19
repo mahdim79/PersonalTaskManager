@@ -28,6 +28,14 @@ class TaskRepository(
         }
     }
 
+    suspend fun removeRemoteTasks() = flow {
+        try {
+            emit(DataState.Success(localDataSource.removeRemoteTasks()))
+        } catch (e: Exception) {
+            emit(DataState.LocalError(e.message))
+        }
+    }
+
     suspend fun deleteTask(id: Int) = flow {
         try {
             emit(DataState.Success(localDataSource.removeTask(id)))

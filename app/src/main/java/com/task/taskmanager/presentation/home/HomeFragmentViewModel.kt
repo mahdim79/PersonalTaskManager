@@ -7,6 +7,7 @@ import com.task.core.domain.task.Task
 import com.task.core.helper.DataState
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.RemoveTask
+import com.task.taskmanager.utils.DataSyncManager
 import com.task.taskmanager.utils.SettingManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,11 +19,14 @@ import javax.inject.Inject
 class HomeFragmentViewModel @Inject constructor(
     private val getLocalTasks: GetLocalTasks,
     private val removeTask: RemoveTask,
-    private val settingManager: SettingManager
+    private val settingManager: SettingManager,
+    private val dataSyncManager: DataSyncManager
 ) : ViewModel() {
 
     val localTasksLiveData = MutableLiveData<DataState<List<Task>>>()
     val removeTaskLiveData = MutableLiveData<DataState<Task>>()
+
+    val syncTasksLiveData = MutableLiveData<DataState<Unit>>()
 
     fun getLocalTasks() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -49,7 +53,19 @@ class HomeFragmentViewModel @Inject constructor(
         }
     }
 
-    suspend fun getDarkModeEnabled():Boolean = settingManager.getDarkMode()
+    fun startSyncOperation(){
+        viewModelScope.launch(Dispatchers.IO) {
+            dataSyncManager.apply {
+                setOnSuccessListener {
+                    syncTasksLiveData.postValue(DataState.Success(Unit))
+                }
+                setOnFailureListener {
+                    syncTasksLiveData.postValue(DataState.LocalError())
+                }
+                startSyncOperation()
+            }
+        }
+    }
 
     fun setDarkModeEnabled(enabled:Boolean){
         viewModelScope.launch {

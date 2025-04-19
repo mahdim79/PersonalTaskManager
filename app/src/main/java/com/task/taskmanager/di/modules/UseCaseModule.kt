@@ -6,6 +6,7 @@ import com.task.core.interactors.AddTask
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.GetRemoteTasks
 import com.task.core.interactors.GetTaskById
+import com.task.core.interactors.RemoveRemoteTasks
 import com.task.core.interactors.RemoveTask
 import com.task.core.interactors.UpdateTask
 import dagger.Module
@@ -29,6 +30,11 @@ class UseCaseModule {
     @Provides
     @Singleton
     fun provideRemoveTask(taskRepository: TaskRepository): RemoveTask = RemoveTask(taskRepository)
+
+    @Provides
+    @Singleton
+    fun provideRemoveRemoteTasks(taskRepository: TaskRepository): RemoveRemoteTasks = RemoveRemoteTasks(taskRepository)
+
 
     @Provides
     @Singleton

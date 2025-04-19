@@ -25,9 +25,9 @@ The architecture of this app, called cleanMvvm, generally consists of 5 parts:
 The application has a separate module that includes the data, domain, and usecase layers.
 
 The rest of the layers (presentation,framework) are in the main module.
+## Clean Layers
 
-- About CleanMvvm Layers:
-  Domain: The Domain Layer ensures business logic remains independent of data sources.
+Domain: The Domain Layer ensures business logic remains independent of data sources.
 
 Data: The Data layer is responsible for handling data from external sources , such as databases and web services. this layer contains two packages: DataSources and Repositories.
 
@@ -83,4 +83,3 @@ Return a list containing all tasks.
 ## Authors
 
 - [@mahdim79](https://www.github.com/mahdim79)
-

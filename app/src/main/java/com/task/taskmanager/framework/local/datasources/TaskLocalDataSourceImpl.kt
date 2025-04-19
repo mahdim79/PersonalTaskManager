@@ -5,7 +5,10 @@ import com.task.core.domain.task.Task
 import com.task.taskmanager.framework.local.TaskDao
 import com.task.taskmanager.framework.local.mapper.TaskLocalMapper
 
-class TaskLocalDataSourceImpl(private val taskDao: TaskDao,private val taskLocalMapper: TaskLocalMapper): TaskLocalDataSource {
+class TaskLocalDataSourceImpl(
+    private val taskDao: TaskDao,
+    private val taskLocalMapper: TaskLocalMapper
+) : TaskLocalDataSource {
     override suspend fun getAllTasks(): List<Task> {
         return taskLocalMapper.mapToDomainList(taskDao.fetchAllTasks())
     }
@@ -14,8 +17,20 @@ class TaskLocalDataSourceImpl(private val taskDao: TaskDao,private val taskLocal
         return taskLocalMapper.mapToDomain(taskDao.fetchTaskById(id).first())
     }
 
-    override suspend fun addNewTask(task: Task):Long {
+    override suspend fun addNewTask(task: Task): Long {
         return taskDao.addNewTask(taskLocalMapper.mapToEntity(task))
+    }
+
+    override suspend fun addMultipleTasks(tasks: List<Task>): List<Long> {
+        return taskDao.addMultipleTasks(taskLocalMapper.mapToEntityList(tasks))
+    }
+
+    override suspend fun removeMultipleTasks(tasks: List<Task>) {
+        tasks.forEach {
+            it.id?.let { tId ->
+                taskDao.deleteTask(tId)
+            }
+        }
     }
 
     override suspend fun removeTask(id: Int) {

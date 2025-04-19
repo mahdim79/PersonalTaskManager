@@ -38,6 +38,7 @@ class TaskApplication : Application(), Configuration.Provider {
 
     private fun startSyncWorker() {
         val request = PeriodicWorkRequestBuilder<SyncWorker>(15, TimeUnit.MINUTES)
+            .setInitialDelay(15,TimeUnit.SECONDS)
             .build()
         WorkManager.getInstance(this)
             .enqueueUniquePeriodicWork(SYNC_WORKER_NAME, ExistingPeriodicWorkPolicy.KEEP, request)

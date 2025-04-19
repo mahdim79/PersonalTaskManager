@@ -7,9 +7,9 @@ import javax.inject.Inject
 
 class TaskLocalMapper @Inject constructor() : EntityMapper<Task, TaskEntity> {
     override fun mapToEntity(domain: Task): TaskEntity =
-        TaskEntity(domain.id, domain.title, domain.description, domain.time)
+        TaskEntity(domain.id, domain.title, domain.description, domain.time,domain.taskId)
 
     override fun mapToDomain(entity: TaskEntity): Task =
-        Task(entity.id, entity.title, entity.description, entity.time)
+        Task(entity.id, entity.title, entity.description, entity.time,entity.taskId)
 
 }

@@ -87,7 +87,16 @@ class HomeFragment : BaseFragment() {
             }
         }
 
+        viewModel.syncTasksLiveData.observe(viewLifecycleOwner){
+            mBinding.srlHomeRefresh.isRefreshing = false
+            if (it is DataState.Success){
+                viewModel.getLocalTasks()
+            }
+        }
+
         viewModel.getLocalTasks()
+        mBinding.srlHomeRefresh.isRefreshing = true
+        viewModel.startSyncOperation()
     }
 
     private fun initViews() {
@@ -106,6 +115,10 @@ class HomeFragment : BaseFragment() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+        }
+
+        mBinding.srlHomeRefresh.setOnRefreshListener {
+            viewModel.startSyncOperation()
         }
     }
 

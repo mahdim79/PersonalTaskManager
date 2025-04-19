@@ -5,8 +5,13 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.task.core.domain.task.Task
 import com.task.core.helper.DataState
+import com.task.core.interactors.AddMultipleTasks
+import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.GetRemoteTasks
+import com.task.taskmanager.utils.AlarmHandler
+import com.task.taskmanager.utils.DataSyncManager
 import com.task.taskmanager.utils.IsOnline
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -15,17 +20,14 @@ import dagger.assisted.AssistedInject
 class SyncWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    val getRemoteTasks: GetRemoteTasks,
-    val isOnline: IsOnline
+    private val dataSyncManager: DataSyncManager
 ) : CoroutineWorker(context, workerParameters) {
 
+    private val TAG = "SyncWorker"
+
     override suspend fun doWork(): Result {
-        getRemoteTasks.invoke(isOnline.hasNetworkConnection())
-            .collect {
-                if (it is DataState.Success) {
-                    Log.i("SyncWorker", "doWork()")
-                }
-            }
+        Log.i(TAG,"doWork()")
+        dataSyncManager.startSyncOperation()
         return Result.success()
     }
 

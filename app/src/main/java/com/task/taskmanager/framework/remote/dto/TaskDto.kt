@@ -13,4 +13,7 @@ data class TaskDto(
     @SerializedName("time")
     @Expose
     val time:Long,
+    @SerializedName("id")
+    @Expose
+    val taskId:Int,
 )

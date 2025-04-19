@@ -1,10 +1,12 @@
 package com.task.taskmanager.di.modules
 
 import com.task.core.data.repositories.TaskRepository
+import com.task.core.interactors.AddMultipleTasks
 import com.task.core.interactors.AddTask
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.GetRemoteTasks
 import com.task.core.interactors.GetTaskById
+import com.task.core.interactors.RemoveMultipleTasks
 import com.task.core.interactors.RemoveTask
 import com.task.core.interactors.UpdateTask
 import dagger.Module
@@ -22,7 +24,17 @@ class UseCaseModule {
 
     @Provides
     @Singleton
+    fun provideAddMultipleTask(taskRepository: TaskRepository): AddMultipleTasks = AddMultipleTasks(taskRepository)
+
+
+    @Provides
+    @Singleton
     fun provideRemoveTask(taskRepository: TaskRepository): RemoveTask = RemoveTask(taskRepository)
+
+    @Provides
+    @Singleton
+    fun provideRemoveMultipleTasks(taskRepository: TaskRepository): RemoveMultipleTasks = RemoveMultipleTasks(taskRepository)
+
 
     @Provides
     @Singleton

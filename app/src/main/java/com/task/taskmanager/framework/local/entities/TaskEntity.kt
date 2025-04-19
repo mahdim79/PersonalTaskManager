@@ -15,5 +15,6 @@ data class TaskEntity(
     var description:String,
     @ColumnInfo(name = "time")
     var time:Long,
-
+    @ColumnInfo(name = "taskId")
+    var taskId:Int? = null,
 )

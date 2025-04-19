@@ -5,7 +5,7 @@ import com.task.core.helper.DataState
 import com.task.core.interactors.AddMultipleTasks
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.GetRemoteTasks
-import com.task.core.interactors.RemoveRemoteTasks
+import com.task.core.interactors.RemoveMultipleTasks
 import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ class DataSyncManager @Inject constructor() {
     lateinit var addMultipleTasks: AddMultipleTasks
 
     @Inject
-    lateinit var removeRemoteTasks: RemoveRemoteTasks
+    lateinit var removeMultipleTasks: RemoveMultipleTasks
 
     private lateinit var onSuccessListener: () -> Unit
     private lateinit var onFailureListener: () -> Unit
@@ -48,31 +48,35 @@ class DataSyncManager @Inject constructor() {
     private suspend fun syncWithLocalDb(newRemoteTasks: List<Task>) {
 
         // get all local tasks
-        getLocalTasks.invoke().collect { localTasks ->
+        getLocalTasks.invoke()
+            .catch { callFailureListener() }
+            .collect { localTasks ->
             if (localTasks is DataState.Success) {
-                // remove all remote tasks
-                removeRemoteTasks.invoke()
+                val removedTasks = calculateRemovedTasks(localTasks.value,newRemoteTasks)
+                val newTasks = calculateNewTasks(localTasks.value,newRemoteTasks)
+
+                // delete tasks that removed from api and exist in local db
+                removeMultipleTasks.invoke(removedTasks)
                     .catch { callFailureListener() }
                     .collect { removeResult ->
-                        if (removeResult is DataState.Success) {
+                        if (removeResult is DataState.Success){
 
-                            // disable alarm for removed remote tasks
-                            localTasks.value.filter { it.taskId != null }.forEach { task ->
-                                alarmHandler.cancelTaskAlarm(task)
+                            removedTasks.forEach {
+                                alarmHandler.cancelTaskAlarm(it)
                             }
 
-                            // add new remote tasks
-                            addMultipleTasks.invoke(newRemoteTasks)
+                            // add tasks that have been added to api and don't exist in local db
+                            addMultipleTasks.invoke(newTasks)
                                 .catch { callFailureListener() }
-                                .collect { addMultipleResult ->
-                                    if (addMultipleResult is DataState.Success) {
-                                        // reset alarms for remote tasks
-                                        resetRemoteTaskAlarms()
-                                    } else {
+                                .collect{
+                                    if (it is DataState.Success){
+                                        reScheduleRemoteAlarms()
+                                    }else{
                                         callFailureListener()
                                     }
                                 }
-                        } else {
+
+                        }else{
                             callFailureListener()
                         }
                     }
@@ -83,7 +87,7 @@ class DataSyncManager @Inject constructor() {
         }
     }
 
-    private suspend fun resetRemoteTaskAlarms() {
+    private suspend fun reScheduleRemoteAlarms() {
         getLocalTasks.invoke()
             .collect { tasks ->
                 if (tasks is DataState.Success) {
@@ -95,6 +99,16 @@ class DataSyncManager @Inject constructor() {
                     callFailureListener()
                 }
             }
+    }
+
+    private fun calculateRemovedTasks(localTasks:List<Task>,remoteTasks:List<Task>):List<Task>{
+        val remoteTaskIds = remoteTasks.mapNotNull { it.taskId }
+        return localTasks.filter { !remoteTaskIds.contains(it.taskId) && it.taskId != null }
+    }
+
+    private fun calculateNewTasks(localTasks:List<Task>,remoteTasks:List<Task>):List<Task>{
+        val localTaskIds = localTasks.mapNotNull { it.taskId }
+        return remoteTasks.filter { !localTaskIds.contains(it.taskId) }
     }
 
     private fun callFailureListener() {

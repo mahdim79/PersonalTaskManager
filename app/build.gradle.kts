@@ -90,6 +90,10 @@ dependencies {
     implementation(libs.hilt.worker)
     ksp(libs.hilt.compiler)
 
+    // Region Appcenter
+    implementation(libs.appcenter.analytics)
+    implementation(libs.appcenter.crashes)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

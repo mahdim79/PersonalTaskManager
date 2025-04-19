@@ -18,6 +18,10 @@ class TaskLocalDataSourceImpl(private val taskDao: TaskDao,private val taskLocal
         return taskDao.addNewTask(taskLocalMapper.mapToEntity(task))
     }
 
+    override suspend fun addMultipleTasks(tasks: List<Task>): List<Long> {
+        return taskDao.addMultipleTasks(taskLocalMapper.mapToEntityList(tasks))
+    }
+
     override suspend fun removeTask(id: Int) {
         taskDao.deleteTask(id)
     }

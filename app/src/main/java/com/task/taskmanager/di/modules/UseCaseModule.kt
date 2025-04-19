@@ -1,6 +1,7 @@
 package com.task.taskmanager.di.modules
 
 import com.task.core.data.repositories.TaskRepository
+import com.task.core.interactors.AddMultipleTasks
 import com.task.core.interactors.AddTask
 import com.task.core.interactors.GetLocalTasks
 import com.task.core.interactors.GetRemoteTasks
@@ -19,6 +20,11 @@ class UseCaseModule {
     @Provides
     @Singleton
     fun provideAddTask(taskRepository: TaskRepository): AddTask = AddTask(taskRepository)
+
+    @Provides
+    @Singleton
+    fun provideAddMultipleTask(taskRepository: TaskRepository): AddMultipleTasks = AddMultipleTasks(taskRepository)
+
 
     @Provides
     @Singleton

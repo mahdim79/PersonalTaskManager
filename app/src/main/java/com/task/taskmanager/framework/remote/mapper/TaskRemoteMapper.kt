@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class TaskRemoteMapper @Inject constructor() : EntityMapper<Task, TaskDto> {
     override fun mapToEntity(domain: Task): TaskDto {
-        return TaskDto(domain.title, domain.description, domain.time)
+        return TaskDto(domain.title, domain.description, domain.time,domain.taskId!!)
     }
 
     override fun mapToDomain(entity: TaskDto): Task {
@@ -15,7 +15,8 @@ class TaskRemoteMapper @Inject constructor() : EntityMapper<Task, TaskDto> {
             id = null,
             title = entity.title,
             description = entity.description,
-            time = entity.time
+            time = entity.time,
+            taskId = entity.taskId
         )
     }
 }
